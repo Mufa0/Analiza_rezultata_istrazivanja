@@ -79,8 +79,24 @@ pie(table(zene$vote),main="Glasanje žena")
 
 muski = AnketaPodaci[AnketaPodaci$gender == 'M',]
 pie(table(muski$vote),main="Glasanje muškaraca")
+
+
+
+# test o dvije proporcije spol, glasalo za
+n = c(nrow(zene), nrow(muski))
+x = c(length(which(zene$vote == "1")),
+      length(which(muski$vote == "1")))
+prop.test(x, n, alternative = "t", correct = "FALSE")
+
+# test o dvije proporcije spol, glasalo protiv
+
+n = c(nrow(zene), nrow(muski))
+x = c(length(which(zene$vote == "0")),
+      length(which(muski$vote == "0")))
+prop.test(x, n, alternative = "t", correct = "FALSE")
 ```
 Udio muškaraca i žena je zadovoljavajući da bi nam ovaj uzorak bio značajan po toj osnovi.Iako je broj muškaraca neznatno manji, iz grafa je vidljivo da jako veći broj muškaraca glasa ZA, za razliku od žena koje su većinski PROTIV.
+To isčitavanje je ispitano testom o jednakosti proporcija dva uzorka koje se provelo na uzorcima muškaraca i žena koji su glasali za i protiv. Iz rezultata testa koji se odnosi na glasanje ZA, vidimo da proporcije spadaju u interval pouzdanosti, te su stoga one jednake. Zaključujemo da je jednak omjer žena i muškaraca glasao ZA. Ista stvar se može zaključiti iz rezultata za glasanje Protiv.
 
 Prikaz ispitanika te rezultata ankete prema lokaciji
 ```{r}
@@ -119,21 +135,8 @@ binom.test(x, n, p = 0.5, alternative = 't')
 n = length(AnketaPodaci$gender)
 x = length(muski$gender)
 binom.test(x, n, p = 0.5, alternative = 't')
-```
-Testovi o dvije proporcije s obzirom na spol
-```{r}
-# test o dvije proporcije spol, glasalo za
-n = c(nrow(zene), nrow(muski))
-x = c(length(which(zene$vote == "1")),
-      length(which(muski$vote == "1")))
-prop.test(x, n, alternative = "t", correct = "FALSE")
 
-# test o dvije proporcije spol, glasalo protiv
-
-n = c(nrow(zene), nrow(muski))
-x = c(length(which(zene$vote == "0")),
-      length(which(muski$vote == "0")))
-prop.test(x, n, alternative = "t", correct = "FALSE")
+#Lukrecija msm da si ti ovaj dio radila, možes li molim te napisat komentar o ovom dijelu, ovako kao sto sam ja opisivao jer ja ne razumijem ovaj dio. Hvala
 ```
 
 Rezultati ankete i spol
