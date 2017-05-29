@@ -17,6 +17,7 @@ require(plotrix)
 Prikaz ispitanika  te rezultata ankete prema dobi
 ```{r}
 art.sred.dob = mean(AnketaPodaci$age)
+#Testni komentar
 medijan.dob = median(AnketaPodaci$age)
 mod.dob = mfv(AnketaPodaci$age)
 
