@@ -14,10 +14,10 @@ require(plotrix)
 ```
 
 
-Prikaz ispitanika  te rezultata ankete prema dobi
+Prikaz ispitanika te rezultata ankete prema dobi ispitanika
 ```{r}
+
 art.sred.dob = mean(AnketaPodaci$age)
-#Testni komentar
 medijan.dob = median(AnketaPodaci$age)
 mod.dob = mfv(AnketaPodaci$age)
 
@@ -29,7 +29,6 @@ range.dom = max(AnketaPodaci$age) - min(AnketaPodaci$age)
 
 # Histogram (15 razreda)
 hist(AnketaPodaci$age, breaks = 15, main = "Dob histogram", xlab = "Dobne skupine", ylab = "Frekvencija")
-
 
 # Box and whiskers
 
@@ -56,7 +55,9 @@ hist(za0$age, breaks = 15, main = "Dob glasali PROTIV histogram", xlab = "Dobne 
 za1 = AnketaPodaci[AnketaPodaci$vote == '1',]
 hist(za1$age, breaks = 15, main = "Dob glasali ZA histogram", xlab = "Dobne skupine", ylab = "Frekvencija")
 ```
-Postoji mnogo stršećih podatak, što nam govori da rezultati ankete s obzirom na dob nisu značajni, tj. uzorak nam nije dobar. Na histogramima vidimo da je krivulja pomaknuta u lijevo, stoga nam je najbolja mjera centralnosti medijan.
+Na histogramu dobi se vidi izrazita desna zakrivljenost, što nam govori da će box plot za dob imati jako puno stršećih vrijednosti. S obzirom da je desna zakrivljenost a x os grafa raste s lijeva na desno vidimo da je veliki broj osoba između 18 i 40 godina pristupilo istraživanju, što nam može reći da je cijelo istraživanje namjenjeno mladim ljudima.
+
+Na histogramu usporedbe rezultata i godina pristupnika vidimo da se nakon 22 godine života mišljenje ljudi mijenja o danoj temi. To bi trebalo ispitati preko testa te utvrditi dali je ta promjena u mišljenju značajna.
 
 
 Prikaz ispitanika te rezultata ankete prema spolu
