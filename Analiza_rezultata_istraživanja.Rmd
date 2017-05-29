@@ -1,0 +1,243 @@
+---
+title: "Analiza_rezultata_istraživanja"
+author: "Bruno Blažeka, Lukrecija Puljić, Mateo Stjepanović"
+date: '29 svibnja 2017 '
+output: pdf_document
+---
+```{r}
+
+AnketaPodaci <- read.csv("AnketaPodaci.csv")
+
+require(modeest)
+require(plotrix)
+
+```
+
+
+Prikaz ispitanika  te rezultata ankete prema dobi
+```{r}
+art.sred.dob = mean(AnketaPodaci$age)
+medijan.dob = median(AnketaPodaci$age)
+mod.dob = mfv(AnketaPodaci$age)
+
+var.dob = var(AnketaPodaci$age)
+sd.dob = sd(AnketaPodaci$age)
+IQR.dob = IQR(AnketaPodaci$age)
+range.dom = max(AnketaPodaci$age) - min(AnketaPodaci$age)
+
+
+# Histogram (15 razreda)
+hist(AnketaPodaci$age, breaks = 15, main = "Dob histogram", xlab = "Dobne skupine", ylab = "Frekvencija")
+
+
+# Box and whiskers
+
+boxplot(AnketaPodaci$age, main="Godine Boxplot",ylab="Godine")
+
+
+# Histogram rezultati ankete i dob
+
+filtrirano.za = AnketaPodaci$age[AnketaPodaci$vote == 1]
+filtrirano.protiv = AnketaPodaci$age[AnketaPodaci$vote == 0]
+list1 = list(filtrirano.za, filtrirano.protiv)
+multhist(list1, breaks = 15, col=c("red","blue"), main="Rezultati ankete histogram",xlab="Godine",ylab="Frekvencija")
+legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
+
+# piechart - glasanje odrasli
+odrasli = AnketaPodaci[AnketaPodaci$age > 18,]
+pie(table(odrasli$vote),main="Glasanje starijih od 18 godina")
+
+# Histogram dobi i glasanja za 0
+za0 = AnketaPodaci[AnketaPodaci$vote == '0',]
+hist(za0$age, breaks = 15, main = "Dob glasali PROTIV histogram", xlab = "Dobne skupine", ylab = "Frekvencija")
+
+#Histogram dobi i glasanja za 1
+za1 = AnketaPodaci[AnketaPodaci$vote == '1',]
+hist(za1$age, breaks = 15, main = "Dob glasali ZA histogram", xlab = "Dobne skupine", ylab = "Frekvencija")
+```
+Postoji mnogo stršećih podatak, što nam govori da rezultati ankete s obzirom na dob nisu značajni, tj. uzorak nam nije dobar. Na histogramima vidimo da je krivulja pomaknuta u lijevo, stoga nam je najbolja mjera centralnosti medijan.
+
+
+Prikaz ispitanika te rezultata ankete prema spolu
+```{r}
+pie(table(AnketaPodaci$gender),main="Raspodjela muških i ženskih osoba u uzorku")
+n = length(AnketaPodaci$gender)
+m = length(which(AnketaPodaci$gender == "M"))
+f = length(which(AnketaPodaci$gender == "F"))
+
+m.udio = m / n
+f.udio = f / n
+
+# piechart - glasanje žene
+
+zene = AnketaPodaci[AnketaPodaci$gender == 'F',]
+pie(table(zene$vote),main="Glasanje žena")
+
+# piechart - glasanje muškarci
+
+muski = AnketaPodaci[AnketaPodaci$gender == 'M',]
+pie(table(muski$vote),main="Glasanje muškaraca")
+```
+Udio muškaraca i žena je zadovoljavajući da bi nam ovaj uzorak bio značajan po toj osnovi.Iako je broj muškaraca neznatno manji, iz grafa je vidljivo da jako veći broj muškaraca glasa ZA, za razliku od žena koje su većinski PROTIV.
+
+Prikaz ispitanika te rezultata ankete prema lokaciji
+```{r}
+# piechart - glasanje Zagreb
+
+zgb = AnketaPodaci[AnketaPodaci$locality == "Zagreb, Croatia",]
+pie(table(zgb$vote),main="Rezultati u Zagrebu")
+
+
+# glasaci za u 5 najmnogobrojnijih gradova
+
+tail(sort(table(za1$locality)),5)
+
+# glasaci protiv u 5 najmnogobrojnijih gradova
+
+tail(sort(table(za0$locality)),5)
+
+# glasacice u 5 najmnogobrojnijih gradova
+
+tail(sort(table(zene$locality)),5)
+
+# glasaci u 5 najmnogobrojnijih gradova
+
+tail(sort(table(muski$locality)),5)
+```
+
+Testovi o jednakoj proporciji
+```{r}
+# test o jednakoj proporciji žena 50%
+n = length(AnketaPodaci$gender)
+x = length(zene$gender)
+binom.test(x, n, p = 0.5, alternative = 't')
+
+# test o jednakoj proporciji muskaraca 50%
+
+n = length(AnketaPodaci$gender)
+x = length(muski$gender)
+binom.test(x, n, p = 0.5, alternative = 't')
+```
+Testovi o dvije proporcije s obzirom na spol
+```{r}
+# test o dvije proporcije spol, glasalo za
+n = c(nrow(zene), nrow(muski))
+x = c(length(which(zene$vote == "1")),
+      length(which(muski$vote == "1")))
+prop.test(x, n, alternative = "t", correct = "FALSE")
+
+# test o dvije proporcije spol, glasalo protiv
+
+n = c(nrow(zene), nrow(muski))
+x = c(length(which(zene$vote == "0")),
+      length(which(muski$vote == "0")))
+prop.test(x, n, alternative = "t", correct = "FALSE")
+```
+
+Rezultati ankete i spol
+```{r}
+n.m = length(which(AnketaPodaci$gender == "M"))
+n.m.za = length(which(AnketaPodaci$gender == "M" & AnketaPodaci$vote == 1))
+n.m.protiv = n.m - n.m.za
+n.m.udio.za = n.m / n.m.za
+n.m.udio.protiv = 1 - n.m.udio.za
+
+n.f = length(which(AnketaPodaci$gender == "F"))
+n.f.za = length(which(AnketaPodaci$gender == "F" & AnketaPodaci$vote == 1))
+n.f.protiv = n.f - n.f.za
+n.f.udio.za = n.f / n.f.za
+n.f.udio.protiv = 1 - n.f.protiv
+
+pie(c(n.m.za, n.m.protiv, n.f.za, n.f.protiv), labels = c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), col = c("Red", "Blue", "Green", "Yellow")) 
+legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), fill=c("red", "blue", "green", "yellow"))
+```
+
+# Histogram dob, spol i ishod glasanja
+```{r}
+za.male = AnketaPodaci$age[AnketaPodaci$gender == "M" & AnketaPodaci$vote == 1]
+protiv.male = AnketaPodaci$age[AnketaPodaci$gender == "M" & AnketaPodaci$vote == 0]
+za.female = AnketaPodaci$age[AnketaPodaci$gender == "F" & AnketaPodaci$vote == 1]
+protiv.female = AnketaPodaci$age[AnketaPodaci$gender == "F" & AnketaPodaci$vote == 0]
+list.age.gender = list(za.male, protiv.male, za.female, protiv.female)
+multhist(list.age.gender, breaks = 15, main = "Rezultati ankete po dobi i spolu", xlab = "Dobne i spolne skupine", ylab = "Frekvencije", col=c("Red", "Blue", "Green", "Yellow"))
+legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), fill=c("red", "blue", "green", "yellow"))
+```
+Prikaz ispitanika prema stupnju cvora u mrezi
+```{r}
+
+art.sred.degree = mean(AnketaPodaci$degree)
+medijan.deegre = median(AnketaPodaci$degree)
+mod.degree = mfv(AnketaPodaci$degree)
+
+var.degree = var(AnketaPodaci$degree)
+sd.degree = sd(AnketaPodaci$degree)
+IDR.degree = IQR(AnketaPodaci$degree)
+range.degree = max(AnketaPodaci$degree) - min(AnketaPodaci$degree)
+
+
+
+# Histogram stupanj cvora u mrezi
+
+hist(AnketaPodaci$degree, main = "Stupanj cvora u mrezi", xlab = "Stupanj cvora", ylab = "Frekvencija")
+
+# Box and whiskers
+
+boxplot(AnketaPodaci$degree,main="Prikaz ispitanika prema stupnju čvora u mreži")
+```
+Imamo jako puno stršećih podataka tako da nam ni ova varijabla nije značajna u ispitivanju. Na prvom histogramu možemo vidjeti izraženu pozitivnu zakrivljenost, koja ja naposlijetku uzrok jako mnogo stršećih podataka. U tom slučaju najmjerodavnija mjera centralnosti je mod.
+
+Stupanj cvora i spol
+```{r}
+multhist(list(AnketaPodaci$degree[AnketaPodaci$gender == "F"], AnketaPodaci$degree[AnketaPodaci$gender == "M"]), main = "Prikaza stupnja cvora s obzrom na spol", xlab = "Stupanj cvora i spol", ylab = "Frekvencija", col = c("Red", "Blue"))
+legend("topright", c("Zene", "Muskarci"), fill=c("red", "blue"))
+```
+Rezultat ankete i stupanj cvora
+```{r}
+multhist(list(AnketaPodaci$degree[AnketaPodaci$vote == 1], AnketaPodaci$degree[AnketaPodaci$vote == 0]), main = "Prikaz rezultata ankete i stupanja cvora", xlab = "Rezulati ankete i stupanja cvora", ylab = "Frekvencija", col=c("Red", "Blue"))
+legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
+```
+Rezultati ankete, spol i stupanj cvora
+```{r}
+multhist(list(AnketaPodaci$degree[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "M"], AnketaPodaci$degree[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "M"], AnketaPodaci$degree[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "F"], AnketaPodaci$degree[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "F"]), col = c("red", "blue", "green", "yellow"), main = "Rezultati ankete s obzorom na spol i stupanj cvora", xlab = "Spol i stupanj cvora", ylab = "Frekvencije")
+legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "ZEne protiv"), fill=c("red", "blue", "green", "yellow"))
+```
+Prikaz ispitanika prema centralnost cvora
+```{r}
+art.sred.center = mean(AnketaPodaci$katz_centrality)
+medijan.center = median(AnketaPodaci$katz_centrality)
+mod.center = mfv(AnketaPodaci$katz_centrality)
+
+var.center = var(AnketaPodaci$katz_centrality)
+sd.center = sd(AnketaPodaci$katz_centrality)
+IDR.center = IQR(AnketaPodaci$katz_centrality)
+range.center = max(AnketaPodaci$katz_centrality) - min(AnketaPodaci$katz_centrality)
+
+
+
+# Prikaz ispitanika prema centralnosti covra u mrezi
+
+hist(AnketaPodaci$katz_centrality, breaks = 15, main = "Prikaz ispitanika prema centralnosti cvora u mrezi", xlab = "Centralnost cvora u mrezi", ylab = "Frekvencija", col= "Green")
+
+# Box and whiskers
+
+boxplot(AnketaPodaci$katz_centrality,main="Prikaz ispitanika prema centralnosti čvora")
+```
+Ponovno je jako puno stršećih podataka te je histogram izrazito pozitivno nakrivljen, zbog toga je naprikladinija mjera centralnosti mod.
+
+Centralnost cvora u mrezi i spol
+```{r}
+multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$gender == "F"], AnketaPodaci$katz_centrality[AnketaPodaci$gender == "M"]), main = "Prikaza centralnosti cvora u mrezi s obzrom na spol", xlab = "Centralnost cvora u mrezi i spol", ylab = "Frekvencija", col = c("Red", "Blue"))
+legend("topright", c("Zene", "Muskarci"), fill=c("red", "blue") )
+```
+Rezultat ankete i centralnost cvora u mrezi
+```{r}
+multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]), main = "Prikaz rezultata ankete i centralnost cvora u mrezi", xlab = "Rezulati ankete i centralnost cvora u mrezi", ylab = "Frekvencija", col=c("Red", "Blue"))
+legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
+```
+Rezultati ankete, spol i centralnost cvora u mrezi
+```{r}
+multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "M"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "M"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "F"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "F"]), col = c("red", "blue", "green", "yellow"), main = "Rezultati ankete s obzorom na spol i centralnost cvora u mrezi", xlab = "Spol i stupanj cvora", ylab = "Frekvencije")
+legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "ZEne protiv"), fill=c("red", "blue", "green", "yellow"))
+```
+
+
