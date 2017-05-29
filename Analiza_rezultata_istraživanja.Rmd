@@ -167,6 +167,8 @@ list.age.gender = list(za.male, protiv.male, za.female, protiv.female)
 multhist(list.age.gender, breaks = 15, main = "Rezultati ankete po dobi i spolu", xlab = "Dobne i spolne skupine", ylab = "Frekvencije", col=c("Red", "Blue", "Green", "Yellow"))
 legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), fill=c("red", "blue", "green", "yellow"))
 ```
+Iz danog histograma vidimo da su muškarci protiv do 22. godine a poslije im se mišljenje mijenja, dok je kod žena obrnuta situacija. One su protiv do 22. godine a poslije većinom za.
+
 Prikaz ispitanika prema stupnju cvora u mrezi
 ```{r}
 
@@ -185,11 +187,17 @@ range.degree = max(AnketaPodaci$degree) - min(AnketaPodaci$degree)
 
 hist(AnketaPodaci$degree, main = "Stupanj cvora u mrezi", xlab = "Stupanj cvora", ylab = "Frekvencija")
 
+#Histogram stupanj cvora u mrezi log transformacija
+
+hist(log(AnketaPodaci$degree), main = "Stupanj cvora u mrezi-logaritamska transformacija", xlab = "Stupanj cvora", ylab = "Frekvencija")
+
 # Box and whiskers
 
 boxplot(AnketaPodaci$degree,main="Prikaz ispitanika prema stupnju čvora u mreži")
+
+boxplot(log(AnketaPodaci$degree),main="Prikaz ispitanika prema stupnju čvora u mreži - logaritamska transformacija")
 ```
-Imamo jako puno stršećih podataka tako da nam ni ova varijabla nije značajna u ispitivanju. Na prvom histogramu možemo vidjeti izraženu pozitivnu zakrivljenost, koja ja naposlijetku uzrok jako mnogo stršećih podataka. U tom slučaju najmjerodavnija mjera centralnosti je mod.
+Na prvom histogramu možemo vidjeti izraženu pozitivnu zakrivljenost, koja ja naposlijetku uzrok jako mnogo stršećih podataka. U tom slučaju najmjerodavnija mjera centralnosti je mod.Budući da je zakrivljenost desna , transformacija podataka se obavlja pomoću logaritamske funkcije.
 
 Stupanj cvora i spol
 ```{r}
