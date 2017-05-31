@@ -122,23 +122,6 @@ tail(sort(table(zene$locality)),5)
 
 tail(sort(table(muski$locality)),5)
 ```
-
-Testovi o jednakoj proporciji
-```{r}
-# test o jednakoj proporciji žena 50%
-n = length(AnketaPodaci$gender)
-x = length(zene$gender)
-binom.test(x, n, p = 0.5, alternative = 't')
-
-# test o jednakoj proporciji muskaraca 50%
-
-n = length(AnketaPodaci$gender)
-x = length(muski$gender)
-binom.test(x, n, p = 0.5, alternative = 't')
-
-#Lukrecija msm da si ti ovaj dio radila, možes li molim te napisat komentar o ovom dijelu, ovako kao sto sam ja opisivao jer ja ne razumijem ovaj dio. Hvala
-```
-
 Rezultati ankete i spol
 ```{r}
 n.m = length(which(AnketaPodaci$gender == "M"))
@@ -241,16 +224,47 @@ Centralnost cvora u mrezi i spol
 ```{r}
 multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$gender == "F"], AnketaPodaci$katz_centrality[AnketaPodaci$gender == "M"]), main = "Prikaza centralnosti cvora u mrezi s obzrom na spol", xlab = "Centralnost cvora u mrezi i spol", ylab = "Frekvencija", col = c("Red", "Blue"))
 legend("topright", c("Zene", "Muskarci"), fill=c("red", "blue") )
+male = AnketaPodaci$katz_centrality[AnketaPodaci$gender == "M"]
+female = AnketaPodaci$katz_centrality[AnketaPodaci$gender == "F"]
+boxplot(log(male),log(female))
+
+var.test(male,female)
+
+t.test(male,female,alt="two.sided",var.equal = FALSE)
 ```
+Iz početnog histograma vidimo da je jaka desna zakrivljenost, stoga smo za boxplot odlučili koristiti logaritamsku transformaciju. Iz boxplota se može vidjeti da ne postoji razlika u očekivanjima, ipak je potrebno provesti test da vidimo je li razlika koja postoji značajna. Proveli smo t-test te zaključili da su očekivanja uistinu jednaka. Testom varijance smo zaključili da odbacujemo početnu hipotezu o jednakosti varijanci.
+
 Rezultat ankete i centralnost cvora u mrezi
 ```{r}
 multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]), main = "Prikaz rezultata ankete i centralnost cvora u mrezi", xlab = "Rezulati ankete i centralnost cvora u mrezi", ylab = "Frekvencija", col=c("Red", "Blue"))
 legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
+
+glasaliZa = AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1]
+glasaliProtiv = AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]
+
+var.test(glasaliZa,glasaliProtiv)
+
+boxplot(log(glasaliZa),log(glasaliProtiv))
+t.test(glasaliZa,glasaliProtiv,alternative = "greater",var.equal = FALSE)
 ```
+Ponovno zbog izrazite desne zakrivljenosti provodimo logaritamsku transformaciju nad podacima, te provodimo test jednakosti varijanci i zaključujemo da odbacujemo početnu hipotezu o jednakosti. Nakon t-testa dobivamo rezultat koji je u skladu s očekivanjima, tj. očekivanja uzoraka se razlikuju.
+
 Rezultati ankete, spol i centralnost cvora u mrezi
 ```{r}
 multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "M"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "M"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "F"], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "F"]), col = c("red", "blue", "green", "yellow"), main = "Rezultati ankete s obzorom na spol i centralnost cvora u mrezi", xlab = "Spol i stupanj cvora", ylab = "Frekvencije")
-legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "ZEne protiv"), fill=c("red", "blue", "green", "yellow"))
+legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), fill=c("red", "blue", "green", "yellow"))
 ```
 
+```{r}
+fit = lm(degree~katz_centrality,AnketaPodaci)
+fit$coefficients
 
+plot(AnketaPodaci$katz_centrality,AnketaPodaci$degree)
+lines(AnketaPodaci$katz_centrality,fit$fitted.values,col='red')
+
+qqnorm(rstandard(fit))
+qqline(rstandard(fit))
+
+cor(AnketaPodaci$katz_centrality,AnketaPodaci$degree)
+```
+Koeficijent korelacije je jako visok, što govori da su ove dvije varijable povezane. Što se moglo i zaključiti iz grafa. Regresijom predviđamo stupanj na temelju centralnosti, te možemo vidjeti da porastom stupnja raste i centralnost. Izračunom se dobije koeficijent regresije 2151 što je zapravo nagib pravca regresije. Te je naposljetku potrebno ispitati normalnost reziduala. Ona se može ispitati preko grafa, mi smo se odlučili na qq-plot, koji pokazuje zadovoljavajuću normalnost reziduala. 
