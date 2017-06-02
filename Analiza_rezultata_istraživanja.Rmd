@@ -16,7 +16,7 @@ require(plotrix)
 ```
 
 
-Prikaz ispitanika te rezultata ankete prema dobi ispitanika
+#Prikaz ispitanika te rezultata ankete prema dobi ispitanika
 ```{r}
 
 art.sred.dob = mean(AnketaPodaci$age)
@@ -62,7 +62,7 @@ Na histogramu dobi se vidi izrazita desna zakrivljenost, što nam govori da će 
 Na histogramu usporedbe rezultata i godina pristupnika vidimo da se nakon 22 godine života mišljenje ljudi mijenja o danoj temi. To bi trebalo ispitati preko testa te utvrditi dali je ta promjena u mišljenju značajna.
 
 
-Prikaz ispitanika te rezultata ankete prema spolu
+#Prikaz ispitanika te rezultata ankete prema spolu
 ```{r}
 pie(table(AnketaPodaci$gender),main="Raspodjela muških i ženskih osoba u uzorku")
 n = length(AnketaPodaci$gender)
@@ -100,7 +100,7 @@ prop.test(x, n, alternative = "t", correct = "FALSE")
 Udio muškaraca i žena je zadovoljavajući da bi nam ovaj uzorak bio značajan po toj osnovi.Iako je broj muškaraca neznatno manji, iz grafa je vidljivo da jako veći broj muškaraca glasa ZA, za razliku od žena koje su većinski PROTIV.
 To isčitavanje je ispitano testom o jednakosti proporcija dva uzorka koje se provelo na uzorcima muškaraca i žena koji su glasali za i protiv. Test ima malu p vrijednost, odbacio je hipotezu da su glasovi muškaraca i žena jednaki. Takav sud testa opravdavaju različiti sample estimates proporcija i različiti grafovi navedeni gore.
 
-Prikaz ispitanika te rezultata ankete prema lokaciji
+#Prikaz ispitanika te rezultata ankete prema lokaciji
 ```{r}
 # piechart - glasanje Zagreb
 
@@ -124,7 +124,7 @@ tail(sort(table(zene$locality)),5)
 
 tail(sort(table(muski$locality)),5)
 ```
-Rezultati ankete i spol
+#Rezultati ankete i spol
 ```{r}
 n.m = length(which(AnketaPodaci$gender == "M"))
 n.m.za = length(which(AnketaPodaci$gender == "M" & AnketaPodaci$vote == 1))
@@ -142,7 +142,7 @@ pie(c(n.m.za, n.m.protiv, n.f.za, n.f.protiv), labels = c("Muskarci za", "Muskar
 legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv"), fill=c("red", "blue", "green", "yellow"))
 ```
 
-# Histogram dob, spol i ishod glasanja
+#Histogram dob, spol i ishod glasanja
 ```{r}
 za.male = AnketaPodaci$age[AnketaPodaci$gender == "M" & AnketaPodaci$vote == 1]
 protiv.male = AnketaPodaci$age[AnketaPodaci$gender == "M" & AnketaPodaci$vote == 0]
@@ -154,7 +154,7 @@ legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "Zene protiv")
 ```
 Iz danog histograma vidimo da su muškarci protiv do 22. godine a poslije im se mišljenje mijenja, dok je kod žena obrnuta situacija. One su protiv do 22. godine a poslije većinom za.
 
-Prikaz ispitanika prema stupnju cvora u mrezi
+#Prikaz ispitanika prema stupnju cvora u mrezi
 ```{r}
 
 art.sred.degree = mean(AnketaPodaci$degree)
@@ -174,32 +174,32 @@ hist(AnketaPodaci$degree, main = "Stupanj cvora u mrezi", xlab = "Stupanj cvora"
 
 #Histogram stupanj cvora u mrezi log transformacija
 
-hist(log(AnketaPodaci$degree), main = "Stupanj cvora u mrezi-logaritamska transformacija", xlab = "Stupanj cvora", ylab = "Frekvencija")
+#hist(log(AnketaPodaci$degree), main = "Stupanj cvora u mrezi-logaritamska transformacija", xlab = "Stupanj cvora", ylab = "Frekvencija")
 
 # Box and whiskers
 
 boxplot(AnketaPodaci$degree,main="Prikaz ispitanika prema stupnju čvora u mreži")
 
-boxplot(log(AnketaPodaci$degree),main="Prikaz ispitanika prema stupnju čvora u mreži - logaritamska transformacija")
+#boxplot(log(AnketaPodaci$degree),main="Prikaz ispitanika prema stupnju čvora u mreži - logaritamska transformacija")
 ```
 Na prvom histogramu možemo vidjeti izraženu pozitivnu zakrivljenost, koja ja naposlijetku uzrok jako mnogo stršećih podataka. U tom slučaju najmjerodavnija mjera centralnosti je mod.Budući da je zakrivljenost desna , transformacija podataka se obavlja pomoću logaritamske funkcije.
 
-Stupanj cvora i spol
+#Stupanj cvora i spol
 ```{r}
 multhist(list(AnketaPodaci$degree[AnketaPodaci$gender == "F"], AnketaPodaci$degree[AnketaPodaci$gender == "M"]), main = "Prikaza stupnja cvora s obzrom na spol", xlab = "Stupanj cvora i spol", ylab = "Frekvencija", col = c("Red", "Blue"))
 legend("topright", c("Zene", "Muskarci"), fill=c("red", "blue"))
 ```
-Rezultat ankete i stupanj cvora
+#Rezultat ankete i stupanj cvora
 ```{r}
 multhist(list(AnketaPodaci$degree[AnketaPodaci$vote == 1], AnketaPodaci$degree[AnketaPodaci$vote == 0]), main = "Prikaz rezultata ankete i stupanja cvora", xlab = "Rezulati ankete i stupanja cvora", ylab = "Frekvencija", col=c("Red", "Blue"))
 legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
 ```
-Rezultati ankete, spol i stupanj cvora
+#Rezultati ankete, spol i stupanj cvora
 ```{r}
 multhist(list(AnketaPodaci$degree[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "M"], AnketaPodaci$degree[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "M"], AnketaPodaci$degree[AnketaPodaci$vote == 1 & AnketaPodaci$gender == "F"], AnketaPodaci$degree[AnketaPodaci$vote == 0 & AnketaPodaci$gender == "F"]), col = c("red", "blue", "green", "yellow"), main = "Rezultati ankete s obzorom na spol i stupanj cvora", xlab = "Spol i stupanj cvora", ylab = "Frekvencije")
 legend("topright", c("Muskarci za", "Muskarci protiv", "Zene za", "ZEne protiv"), fill=c("red", "blue", "green", "yellow"))
 ```
-Prikaz ispitanika prema centralnost cvora
+#Prikaz ispitanika prema centralnost cvora
 ```{r}
 art.sred.center = mean(AnketaPodaci$katz_centrality)
 medijan.center = median(AnketaPodaci$katz_centrality)
@@ -222,7 +222,7 @@ boxplot(AnketaPodaci$katz_centrality,main="Prikaz ispitanika prema centralnosti 
 ```
 U prethodnim slikama vidimo da većina ljudi ima malu centralnost što je očekivano. Ponovno je jako puno stršećih podataka te je histogram izrazito pozitivno nakrivljen, zbog toga je naprikladinija mjera centralnosti mod.
 
-Centralnost cvora u mrezi i spol
+#Centralnost cvora u mrezi i spol
 ```{r}
 multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$gender == "F"], AnketaPodaci$katz_centrality[AnketaPodaci$gender == "M"]), main = "Prikaza centralnosti cvora u mrezi s obzrom na spol", xlab = "Centralnost cvora u mrezi i spol", ylab = "Frekvencija", col = c("Red", "Blue"))
 legend("topright", c("Zene", "Muskarci"), fill=c("red", "blue") )
@@ -230,13 +230,21 @@ male = AnketaPodaci$katz_centrality[AnketaPodaci$gender == "M"]
 female = AnketaPodaci$katz_centrality[AnketaPodaci$gender == "F"]
 boxplot(log(male),log(female))
 
-var.test(male,female)
+qqnorm(AnketaPodaci$katz_centrality[AnketaPodaci$gender=="M"])
+qqline(AnketaPodaci$katz_centrality[AnketaPodaci$gender=="M"])
 
-t.test(male,female,alt="two.sided",var.equal = FALSE)
+qqnorm(AnketaPodaci$katz_centrality[AnketaPodaci$gender=="F"])
+qqline(AnketaPodaci$katz_centrality[AnketaPodaci$gender=="F"])
+
+summary(AnketaPodaci)
+var.test(log(male),log(female))
+
+t.test(log(male),log(female),alt="two.sided",var.equal = FALSE)
 ```
-Iz početnog histograma vidimo da je jaka desna zakrivljenost, stoga smo za boxplot odlučili koristiti logaritamsku transformaciju. Iz boxplota se može vidjeti da ne postoji razlika u očekivanjima, ipak je potrebno provesti test da vidimo je li razlika koja postoji značajna. Proveli smo t-test te zaključili da su očekivanja uistinu jednaka. Testom varijance smo zaključili da odbacujemo početnu hipotezu o jednakosti varijanci.
+Iz početnog histograma vidimo da je jaka desna zakrivljenost, stoga smo za boxplot odlučili koristiti logaritamsku transformaciju. Iz boxplota se može vidjeti da ne postoji razlika u očekivanjima, ipak je potrebno provesti test da vidimo je li razlika koja postoji značajna. Proveli smo t-test te zaključili da su očekivanja uistinu jednaka. Testom varijance smo zaključili da ne odbacujemo početnu hipotezu o jednakosti varijanci.
+Za t-testove,kojima u ovom slučaju ispitujemo postoji li značajna razlika u centralnosti ispitanika s obzirom na spol, mora vrijediti da su podaci normalno distribuirani, što se može ispitati sa tri pravila "palca". Prvo pravilo glasi da podaci moraju biti nezavisni, što je slučaj kod naših podataka. Kao što je vidljivo iz summry-a uzorak je dovoljno velik, što potkrjepljuje drugo pravilo palca. Već je utvrđeno da je jaka desna zakrivljenost, stoga nam je potrebna logaritamska transformacija kako bismo zadovoljili zadnje pravilo "palca".
 
-Rezultat ankete i centralnost cvora u mrezi
+#Rezultat ankete i centralnost cvora u mrezi
 ```{r}
 multhist(list(AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1], AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]), main = "Prikaz rezultata ankete i centralnost cvora u mrezi", xlab = "Rezulati ankete i centralnost cvora u mrezi", ylab = "Frekvencija", col=c("Red", "Blue"))
 legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
@@ -244,12 +252,18 @@ legend("topright", c("Za", "Protiv"), fill=c("red", "blue"))
 glasaliZa = AnketaPodaci$katz_centrality[AnketaPodaci$vote == 1]
 glasaliProtiv = AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]
 
+qqnorm(AnketaPodaci$katz_centrality[AnketaPodaci$vote==0])
+qqline(AnketaPodaci$katz_centrality[AnketaPodaci$vote==0])
+
+qqnorm(AnketaPodaci$katz_centrality[AnketaPodaci$vote==1])
+qqline(AnketaPodaci$katz_centrality[AnketaPodaci$vote==1])
+
 var.test(glasaliZa,glasaliProtiv)
 
 boxplot(log(glasaliZa),log(glasaliProtiv))
-t.test(glasaliZa,glasaliProtiv,alternative = "two.sided",var.equal = FALSE)
+t.test(log(glasaliZa),log(glasaliProtiv),alternative = "two.sided",var.equal = FALSE)
 ```
-Ponovno zbog izrazite desne zakrivljenosti provodimo logaritamsku transformaciju nad podacima, te provodimo test jednakosti varijanci i zaključujemo da odbacujemo početnu hipotezu o jednakosti. Nakon t-testa dobivamo rezultat koji je u skladu s očekivanjima, tj. očekivanja uzoraka se razlikuju.
+Ponovno zbog izrazite desne zakrivljenosti provodimo logaritamsku transformaciju nad podacima, te provodimo test jednakosti varijanci i zaključujemo da odbacujemo početnu hipotezu o jednakosti. Nakon t-testa,kojim ispitujemo rezultate ankete s obzirom na centralnost, dobivamo rezultat koji je u skladu s očekivanjima, tj. očekivanja uzoraka se razlikuju. Kao što je vidljivo iz summry-a uzorak je dovoljno velik, što potkrjepljuje drugo pravilo palca. Već je utvrđeno da je jaka desna zakrivljenost, stoga nam je potrebna logaritamska transformacija kako bismo zadovoljili zadnje pravilo "palca".
 
 Rezultati ankete, spol i centralnost cvora u mrezi
 ```{r}
@@ -268,5 +282,7 @@ qqnorm(rstandard(fit))
 qqline(rstandard(fit))
 
 cor(AnketaPodaci$katz_centrality,AnketaPodaci$degree)
+
+summary(fit)
 ```
-Koeficijent korelacije je jako visok, što govori da su ove dvije varijable povezane. Što se moglo i zaključiti iz grafa. Regresijom predviđamo stupanj na temelju centralnosti, te možemo vidjeti da porastom stupnja raste i centralnost. Izračunom se dobije koeficijent regresije 2151 što je zapravo nagib pravca regresije. Te je naposljetku potrebno ispitati normalnost reziduala. Ona se može ispitati preko grafa, mi smo se odlučili na qq-plot, koji pokazuje zadovoljavajuću normalnost reziduala. 
+Koeficijent korelacije je jako visok, što govori da su ove dvije varijable povezane. Što se moglo i zaključiti iz grafa. Regresijom predviđamo stupanj na temelju centralnosti, te možemo vidjeti da porastom stupnja raste i centralnost. Izračunom se dobije koeficijent regresije 2151 što je zapravo nagib pravca regresije. Te je naposljetku potrebno ispitati normalnost reziduala. Ona se može ispitati preko grafa, mi smo se odlučili na qq-plot, koji pokazuje blago rečeno rubni slučaj  normalnosti reziduala. Iz summary-a se zaključuje da je centralnost statistički značajan prediktor. To se zaključuje iz toga što je njegov t test jako velik (169.37) , odnosno pripradna vjerovatnost je jako mala.
