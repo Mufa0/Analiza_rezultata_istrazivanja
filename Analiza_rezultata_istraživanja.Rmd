@@ -247,7 +247,7 @@ glasaliProtiv = AnketaPodaci$katz_centrality[AnketaPodaci$vote == 0]
 var.test(glasaliZa,glasaliProtiv)
 
 boxplot(log(glasaliZa),log(glasaliProtiv))
-t.test(glasaliZa,glasaliProtiv,alternative = "greater",var.equal = FALSE)
+t.test(glasaliZa,glasaliProtiv,alternative = "two.sided",var.equal = FALSE)
 ```
 Ponovno zbog izrazite desne zakrivljenosti provodimo logaritamsku transformaciju nad podacima, te provodimo test jednakosti varijanci i zaključujemo da odbacujemo početnu hipotezu o jednakosti. Nakon t-testa dobivamo rezultat koji je u skladu s očekivanjima, tj. očekivanja uzoraka se razlikuju.
 
